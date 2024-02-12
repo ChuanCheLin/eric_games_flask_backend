@@ -362,22 +362,6 @@ class MirrorMazeSolver:
 
         return True
 
-    def print_answer_puzzle(self) -> None:
-        """
-        print out the final answer of the mirror maze
-        :return: None
-        """
-        final_grid = self.grid.astype(str)
-
-        for i, row in enumerate(final_grid):
-            for j, elem in enumerate(row):
-                if elem == "0":
-                    final_grid[i, j] = self.monster_position[(i, j)]
-                elif elem == "1":
-                    final_grid[i][j] = "/"
-                elif elem == "2":
-                    final_grid[i, j] = "\\"
-        print(final_grid)
 
     def write_answer_puzzle_to_file(self, file_path: str) -> None:
         """
@@ -431,7 +415,6 @@ class MirrorMazeSolver:
                 if self.check_puzzle():
                     if is_full:
                         if self.check_full_puzzle():
-                            # self.print_answer_puzzle()
                             # print(self.monster_position)
                             self.solutions.append(self.monster_position)
                             # print(self.solutions)
@@ -496,66 +479,15 @@ def generate_puzzle(height: int, width: int):
             for value in ms_gen.monster_position_determined.values():
                 # return the monsters in the monster_position_determined to the total numbers
                 ms_gen.monster_nums[value] += 1
-            print(ms_gen.monster_nums)
-            print(ms_gen.border_nums)
-            print(ms_gen.grid)
             break
+
+    return {
+        'monster_nums': ms_gen.monster_nums,
+        'border_nums': ms_gen.border_nums,
+        'grid': ms_gen.grid.tolist(),  # Convert np.array to list for JSON serialization
+        'solution': ms_gen.solutions  # Make sure this is in a format that can be JSON serialized
+    }
 
 
 if __name__ == '__main__':
-    puzzle_2x2 = ({"Z": 1, "V": 1, "G": 1},  # Zombie, Vampire, Ghost
-                  [[0, 2],
-                   [0, 0]],
-                  {"top": [1, 0], "left": [1, 2], "bottom": [1, 2], "right": [0, 2]}
-                  )
-    puzzle_3x3 = ({"Z": 4, "V": 1, "G": 1},  # Zombie, Vampire, Ghost
-                  [[2, 0, 0],
-                   [0, 0, 0],
-                   [2, 0, 2]],
-                  {"top": [1, 2, 2], "left": [2, 2, 0], "bottom": [0, 2, 2], "right": [2, 2, 2]}
-                  )
-    puzzle_4x4 = ({"Z": 2, "V": 5, "G": 4},  # Zombie, Vampire, Ghost
-                  [[0, 0, 0, 0],
-                   [2, 0, 1, 0],
-                   [0, 0, 2, 0],
-                   [1, 1, 0, 0]],
-                  {"top": [1, 0, 3, 4], "left": [2, 0, 1, 0], "bottom": [3, 0, 2, 4], "right": [2, 2, 2, 2]}
-                  )
-    puzzle_5x5 = ({"Z": 4, "V": 9, "G": 6},  # Zombie, Vampire, Ghost
-                  [[0, 0, 0, 0, 0],
-                   [0, 0, 1, 1, 0],
-                   [2, 0, 0, 1, 0],
-                   [0, 0, 0, 0, 1],
-                   [0, 2, 0, 0, 0]],
-                  {"top": [3, 3, 3, 0, 2], "left": [4, 0, 0, 6, 1], "bottom": [2, 0, 4, 3, 1], "right": [4, 3, 0, 1, 7]}
-                  )
-
-    puzzle_4x4_four_solutions = ({'Z': 3, 'G': 4, 'V': 1},
-                                 [[1, 1, 0, 1],
-                                  [2, 0, 0, 2],
-                                  [0, 1, 0, 2],
-                                  [0, 2, 0, 0]],
-                              {'top': [0, 2, 1, 3], 'left': [0, 2, 3, 1], 'bottom': [2, 1, 1, 3], 'right': [0, 0, 2, 2]}
-    )
-
-    puzzle_7x7 = ({'Z': 8, 'G': 6, 'V': 16},
-                                 [[0, 2, 1, 0, 0, 0, 0],
-                                  [2, 1, 0, 1, 0, 0, 0],
-                                  [0, 0, 0, 0, 2, 1, 0],
-                                  [1, 0, 1, 2, 2, 0, 0],
-                                  [0, 1, 1, 1, 1, 0, 0],
-                                  [1, 1, 2, 0, 0, 2, 0],
-                                  [0, 0, 0, 0, 0, 0, 0]],
-                              {'top': [2, 0, 0, 0, 0, 4, 6], 'left': [2, 0, 5, 0, 2, 3, 5], 'bottom': [0, 2, 2, 2, 3, 2, 6], 'right': [3, 3, 2, 3, 3, 0, 5]}
-    )
-
-    # all_puzzles = [puzzle_2x2, puzzle_3x3, puzzle_4x4, puzzle_5x5, puzzle_7x7]
-    #
-    # test_puzzles = [puzzle_7x7]
-    #
-    # for puzzle in test_puzzles:
-    #     MS = MirrorMazeSolver(puzzle[0], np.array(puzzle[1]), puzzle[2])
-    #     # MS.find_solutions(det=True)  # with deterministic solving strategies
-    #     MS.find_solutions(det=False)  # without deterministic solving strategies
-
     generate_puzzle(5, 5)
